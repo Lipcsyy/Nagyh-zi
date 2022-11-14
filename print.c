@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 void menuPrint(){
-    printf("Szamlan levo osszeg: %d HUF \n", szamla);
+    printf("\nSzamlan levo osszeg: %d HUF \n", szamla);
 
     printf("(1) - Uj kiadas bevitele\n");
     printf("(2) - Uj bevetel bevitele\n");

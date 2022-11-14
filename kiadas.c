@@ -79,7 +79,6 @@ void kiadas(time_t t)
 
     int kiadasSum = 0;
     listaElem* mozgo = eleje;
-    printf("%p\n", mozgo);
 
     while (mozgo != NULL) 
     {
@@ -250,7 +249,7 @@ void kiadasList(){
         closedir(d);
     }
     
-    printf("Melyik honap kiadasait szeretned kilistazni? ");
+    printf("\nMelyik honap kiadasait szeretned kilistazni? ");
 
     int kiadasIndex = 0;
     char fileName[8];
@@ -280,7 +279,7 @@ void kiadasList(){
         closedir(d);
     }
 
-    printf("Filename : %s\n", fileName);
+    printf("\nBeolvasott hónap: %s\n", fileName);
 
 
     FILE* fp = fopen(fileName, "r");
@@ -288,17 +287,15 @@ void kiadasList(){
     size_t len = 0;
     ssize_t read;
 
+    printf("\n");
     if (fp == NULL)
     {
-        printf("Nem sikerult bep");
+        printf("Nem sikerult beolvasni");
     }
 
     while ((read = getline(&line, &len, fp)) != -1) {
         printf("%s", line);
     }
-
-    difftime(mozgo -> datu, dada.datum);
-
 
 
     fclose(fp);

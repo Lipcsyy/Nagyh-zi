@@ -37,36 +37,34 @@ int main(void)
         szamla = firstSzamla;
     }
 
-    kiadasList();
+    menuPrint();
 
-    // menuPrint();
+    while (scanf("%d", &input) == 1 && input != 6)
+    {
+         switch (input)
+         {
+            case 1:
+                kiadas(t);
+                break;
+            case 2:
+                bevetel();
+                break;
+            case 3:
+                kiadasList();
+                break;
+            case 4:
+                kiadasEdit();
+                break;
+            case 5:
+                statistics();
+                break;
 
-    // while (scanf("%d", &input) == 1 && input != 6)
-    // {
-    //     switch (input)
-    //     {
-    //     case 1:
-    //         kiadas(&szamla);
-    //         break;
-    //     case 2:
-    //         bevetel();
-    //         break;
-    //     case 3:
-    //         kiadasList();
-    //         break;
-    //     case 4:
-    //         kiadasEdit();
-    //         break;
-    //     case 5:
-    //         statistics();
-    //         break;
+            default:
+                break;
+         }
 
-    //     default:
-    //         break;
-    //     }
-
-    //     menuPrint();
-    // }
+         menuPrint();
+    }
 
     return 0;
 }
