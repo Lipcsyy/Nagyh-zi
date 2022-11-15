@@ -19,4 +19,6 @@ void bevetel(){
     szamla += bev;
     szamlaWriter(szamla);
     printf("Az uj egyenleg: %d \n", szamla);
+
+    footerPrint("BEVETEL MEGADASA");
 }

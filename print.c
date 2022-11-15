@@ -1,4 +1,5 @@
 #include "szamla.h"
+#include <string.h>
 #include <stdio.h>
 
 void menuPrint(){
@@ -38,4 +39,21 @@ void headerPrint(char* header)
     // {
     //     printf("\033[A\33[2K");
     // }
+}
+
+
+void footerPrint(char* header)
+{
+    int length = strlen(header);
+    
+    printf("\n");
+
+
+    for (int i = 0; i < (60 + length); i++)
+    {
+        printf("-");
+    }
+    
+    printf("\n");
+
 }

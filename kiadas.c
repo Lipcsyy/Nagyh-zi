@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <dirent.h>
+#include <ctype.h>
 
 #include "szamla.h"
 #include "kiadas.h"
@@ -37,7 +38,7 @@ void kiadas(time_t t)
         kiadasPt->id = kiadasPt->datum.tm_mday*1000000 + kiadasPt->datum.tm_hour*10000 + kiadasPt->datum.tm_min*100 + kiadasPt->datum.tm_sec + kiadasokCount; 
 
         printf("Add meg a tetel nevet!\n");
-        scanf("%s", kiadasPt->nev);
+        scanf(" %[^\n]s", kiadasPt->nev);
         printf("\033[A\33[2K\033[A\33[2K");
 
         printf("Add meg a tetel arat!\n");
@@ -47,7 +48,7 @@ void kiadas(time_t t)
 
         printf("Add meg a kategoriajat!\n");
 
-        while (scanf("%d", &(kiadasPt->kategoria)) == 1 && (kiadasPt->kategoria > 6 || kiadasPt->kategoria < 0 ))
+        while (scanf("%d", &(kiadasPt->kategoria)) == 1 && (kiadasPt->kategoria > 6 || kiadasPt->kategoria <= 0 ))
         {
             printf("Add meg a kategoriajat!\n");
             printf("\033[A\33[2K\033[A\33[2K");
@@ -59,15 +60,6 @@ void kiadas(time_t t)
 
         listaVegFuz(&eleje, t, kiadasPt);
 
-        //-----------------------------------------------malloccal
-
-        // if(kiadasokCount >= kiadasokHossz)
-        // {   
-        //     kiadasokHossz *= 2;    
-        //     //kiadasok = (Kiadas*) realloc(kiadasok, sizeof(Kiadas)*(kiadasokHossz));
-        // }
-
-        //kiadasok[kiadasokCount] = kiadas;
         kiadasokCount++;
         
         printf("Szeretned folytatni? (I) Igen (N) Nem : ");
@@ -125,6 +117,8 @@ void kiadas(time_t t)
         kiadasWriter(fileName, eleje);
         free(kiadasok);
     }
+
+    footerPrint("KIADAS BEVITELE");
     
 }
 
@@ -221,7 +215,6 @@ void kiadasEdit(){
 }
 
 
-
 void kiadasList(){
 
     headerPrint("KIADAS LISTAZASA");
@@ -230,10 +223,9 @@ void kiadasList(){
     DIR *d;
     struct dirent *dir;
     d = opendir(".");
+    int index = 0;
     if (d) {
-        
-        int index = 1;
-
+    
         while ((dir = readdir(d)) != NULL) {
 
             int year;
@@ -241,64 +233,71 @@ void kiadasList(){
 
             if (sscanf(dir->d_name, "%d_%d", &year, &month) == 2)
             {
-                printf("%d. %s\n", index,dir->d_name);
                 index++;
+                printf("%d. %s\n", index,dir->d_name);
             }
 
         }
         closedir(d);
     }
     
-    printf("\nMelyik honap kiadasait szeretned kilistazni? ");
+    printf("\nMelyik honap kiadasait szeretned kilistazni: ");
 
     int kiadasIndex = 0;
     char fileName[8];
 
-    scanf("%d", &kiadasIndex);
 
-    d = opendir(".");
-    if (d) {
-        
-        int index = 0;
-
-        while ((dir = readdir(d)) != NULL) {
-
-            int year;
-            int month;
-
-            if (sscanf(dir->d_name, "%d_%d", &year, &month) == 2)
-            {
-                index++;
-                if (index == kiadasIndex)
-                {   
-                    strcpy(fileName, dir->d_name);
-                }
-            }
-
-        }
-        closedir(d);
-    }
-
-    printf("\nBeolvasott hónap: %s\n", fileName);
-
-
-    FILE* fp = fopen(fileName, "r");
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-
-    printf("\n");
-    if (fp == NULL)
+    while (scanf("%d", &kiadasIndex ) == 1 && kiadasIndex != EOF && kiadasIndex <= index)
     {
-        printf("Nem sikerult beolvasni");
+        d = opendir(".");
+        if (d) {
+            
+            int index = 0;
+
+            while ((dir = readdir(d)) != NULL) {
+
+                int year;
+                int month;
+
+                if (sscanf(dir->d_name, "%d_%d", &year, &month) == 2)
+                {
+                    index++;
+                    if (index == kiadasIndex)
+                    {   
+                        strcpy(fileName, dir->d_name);
+                    }
+                }
+
+            }
+            closedir(d);
+        }
+
+        printf("\nBeolvasott honap: %s\n", fileName);
+
+        FILE* fp = fopen(fileName, "r");
+        char * line = NULL;
+        size_t len = 0;
+        ssize_t read;
+
+        printf("\n");
+        if (fp == NULL)
+        {
+            printf("Nem sikerult beolvasni");
+        }
+
+        while ((read = getline(&line, &len, fp)) != -1) {
+            printf("%s", line);
+        }
+
+
+        fclose(fp);
+        if (line)
+            free(line);
+        
+        printf("\nAdd meg melyik tovabbi honapot szeretned kilistazni? ");
+
     }
 
-    while ((read = getline(&line, &len, fp)) != -1) {
-        printf("%s", line);
-    }
+    footerPrint("KIADAS LISTAZASA");
 
-
-    fclose(fp);
-    if (line)
-        free(line);
 }
