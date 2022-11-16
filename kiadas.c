@@ -58,7 +58,7 @@ void kiadas(time_t t)
 
         //--------------------------------------------láncolt listával
 
-        listaVegFuz(&eleje, t, kiadasPt);
+        listaVegFuz(&eleje, kiadasPt);
 
         kiadasokCount++;
         
@@ -90,8 +90,6 @@ void kiadas(time_t t)
     {   
 
         mozgo = eleje;
-        printf("%p\n", mozgo);
-
 
         while (mozgo != NULL)
         {
@@ -115,7 +113,7 @@ void kiadas(time_t t)
         strcat(fileName,"_");
         strcat(fileName,fMonth);
 
-        kiadasWriter(fileName, eleje);
+        kiadasWriter(fileName, eleje, "a");
         free(kiadasok);
     }
 
@@ -150,14 +148,14 @@ bool fileExists(char *filename)
 }
 
 
-void kiadasWriter(char* fileName, listaElem* eleje)
+void kiadasWriter(char* fileName, listaElem* eleje, const char* mode)
 {
 
     listaElem* head = eleje;
 
     if (fileExists(fileName)) //ha létezik akkor csak appendelek a végére
     {
-        FILE* fp = fopen(fileName, "a");
+        FILE* fp = fopen(fileName, mode);
         while (head != NULL)
         { 
             fprintf(fp,"%s_%d_%s_%d\n", head->kiadas->nev, head->kiadas->osszeg,tags[head->kiadas->kategoria], head->kiadas->id);  
@@ -182,7 +180,7 @@ void kiadasWriter(char* fileName, listaElem* eleje)
 }
 
 
-void listaVegFuz(listaElem** eleje, time_t t, Kiadas* kiadas)
+void listaVegFuz(listaElem** eleje, Kiadas* kiadas)
 {
     
     listaElem* uj;
@@ -192,14 +190,12 @@ void listaVegFuz(listaElem** eleje, time_t t, Kiadas* kiadas)
     uj->kiadas = kiadas;
     uj->kov = NULL;
     
-
     if (*eleje == NULL)
     {    
         *eleje = uj;
     }
     else
     {   
-
         listaElem* mozgo = *eleje;
 
         while (mozgo->kov != NULL) 
@@ -279,8 +275,6 @@ void kiadasEdit(){
             }
 
             listaElem* eleje = NULL; 
-            
-
             int lineIndex = 0;
 
             while ((read = getline(&line, &len, fp)) != -1) {
@@ -288,24 +282,62 @@ void kiadasEdit(){
                 Kiadas* kiadasPt = (Kiadas*) malloc(sizeof(Kiadas));
                 char kategoria[20];
 
-                sscanf(line,"%s_%d_%s_%d", kiadasPt->nev, &(kiadasPt->osszeg), kategoria,&(kiadasPt->id ));
+                sscanf(line, "%[^_]_%d_%[^_]_%d", kiadasPt->nev, &(kiadasPt->osszeg), kategoria, &(kiadasPt->id));
+                
+                //printf("%s %d %s %d\n", kiadasPt->nev, kiadasPt->osszeg, kategoria, kiadasPt->id);
 
-                printf("MEGVAN : %s\n", kiadasPt->nev);
-
-                //TODO: index megkeresese
+                //tags-ből a kategóriának index megkeresese
+                for (int i = 0; i < 6; i++)
+                {
+                    if(strcmp(tags[i], kategoria) == 0 ) kiadasPt->kategoria = i;
+                }
+                
+                listaVegFuz(&eleje, kiadasPt);
 
                 printf("%d. %s", lineIndex ,line);
+               
                 lineIndex++;
             }
 
 
+            lineIndex = 0;
             int deleteIndex = 0;
-            printf("Melyik elemet szeretned törölni? ");
-            
+
+            printf("Melyik elemet szeretned torolni? ");
             scanf("%d", &deleteIndex);
+            printf("\n");
 
+            listaElem* head = eleje;
+            listaElem* temp = eleje;
+            bool deleted = false;
+
+            while (head != NULL && !deleted) 
+            {   
+                if(deleteIndex == lineIndex)
+                {
+                    temp->kov = head->kov;
+                    free(head);
+                    deleted = true;
+                }
+
+                temp = head;
+                head = head->kov;
+
+                lineIndex++;
+            }
+
+            head = eleje;
+
+            while (head != NULL)
+            {
+                printf("%s %d %s %d \n", head->kiadas->nev,head->kiadas->osszeg, tags[head->kiadas->kategoria], head->kiadas->id);
+                head = head->kov;
+            }
+
+            kiadasWriter(fileName,eleje, "w");
             
-
+            //TODO: freelni a láncolt listát
+            
             fclose(fp);
             if (line)
                 free(line);

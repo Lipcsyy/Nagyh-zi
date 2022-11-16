@@ -39,7 +39,7 @@ int main(void)
 
     menuPrint();
 
-while (scanf("%d", &input) == 1 && input != 6)
+while (scanf(" %d", &input) == 1 && input != 6)
     {
          switch (input)
          {

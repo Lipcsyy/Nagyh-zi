@@ -50,11 +50,12 @@ bool fileExists(char *filename);
 /// @param fileName A filenév, ami alapján checkoljuk, hogy hova kell írni
 /// @param kiadasok Az adatok, amiket bele szeretnénk írni a fileba
 /// @param length A hossza az kiadasok tombnek
-void kiadasWriter(char* fileName, listaElem* eleje);
+void kiadasWriter(char* fileName, listaElem* eleje, const char* mode);
 
 /// @brief Ez a fuggveny a lancolt lista vegere fuzi a kovetkezo elemet
-/// @param eleje 
-void listaVegFuz(listaElem** eleje, time_t t, Kiadas* kiadas);
+/// @param eleje itt add meg a láncolt lista elejere mutato pointert
+/// @param kiadas itt meg add meg az adott elemet, amit hozzá szeretnél fűzni a listához
+void listaVegFuz(listaElem** eleje, Kiadas* kiadas);
 
 void kiadasEdit();
 
