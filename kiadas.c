@@ -67,6 +67,7 @@ void kiadas(time_t t)
         
     }
 
+    //TODO: kiadasok lancolt lista felszabaditas
     //összeszámoljuk, mennyit költene összesen most a felhasználó
 
     int kiadasSum = 0;
@@ -211,7 +212,111 @@ void listaVegFuz(listaElem** eleje, time_t t, Kiadas* kiadas)
 
 
 void kiadasEdit(){
-    printf("KiadasEdit\n");
+    
+    headerPrint("KIADAS MEGVALTOZTATASA");
+
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(".");
+    int index = 0;
+    if (d) {
+    
+        while ((dir = readdir(d)) != NULL) {
+
+            int year;
+            int month;
+
+            if (sscanf(dir->d_name, "%d_%d", &year, &month) == 2)
+            {
+                index++;
+                printf("%d. %s\n", index,dir->d_name);
+            }
+
+        }
+        closedir(d);
+    }
+
+    printf("\nMelyik honap kiadasait szeretned kilistazni: ");
+
+    int kiadasIndex = 0;
+    char fileName[8];
+
+    if(scanf("%d", &kiadasIndex ) == 1)
+    {
+        d = opendir(".");
+        if (d) {
+            
+            int index = 0;
+
+            while ((dir = readdir(d)) != NULL) {
+
+                int year;
+                int month;
+
+                if (sscanf(dir->d_name, "%d_%d", &year, &month) == 2)
+                {
+                    index++;
+                    if (index == kiadasIndex)
+                    {   
+                        strcpy(fileName, dir->d_name);
+                    }
+                }
+
+            }
+            closedir(d);
+
+            printf("\nBeolvasott honap: %s\n", fileName);
+
+            FILE* fp = fopen(fileName, "r");
+            char * line = NULL;
+            size_t len = 0;
+            ssize_t read;
+
+            printf("\n");
+            if (fp == NULL)
+            {
+                printf("Nem sikerult beolvasni");
+            }
+
+            listaElem* eleje = NULL; 
+            
+
+            int lineIndex = 0;
+
+            while ((read = getline(&line, &len, fp)) != -1) {
+
+                Kiadas* kiadasPt = (Kiadas*) malloc(sizeof(Kiadas));
+                char kategoria[20];
+
+                sscanf(line,"%s_%d_%s_%d", kiadasPt->nev, &(kiadasPt->osszeg), kategoria,&(kiadasPt->id ));
+
+                printf("MEGVAN : %s\n", kiadasPt->nev);
+
+                //TODO: index megkeresese
+
+                printf("%d. %s", lineIndex ,line);
+                lineIndex++;
+            }
+
+
+            int deleteIndex = 0;
+            printf("Melyik elemet szeretned törölni? ");
+            
+            scanf("%d", &deleteIndex);
+
+            
+
+            fclose(fp);
+            if (line)
+                free(line);
+            
+        }
+
+        
+    }
+
+    footerPrint("KIADAS MEGVALTOZTATASA");
+
 }
 
 
@@ -245,6 +350,7 @@ void kiadasList(){
 
     int kiadasIndex = 0;
     char fileName[8];
+
 
 
     while (scanf("%d", &kiadasIndex ) == 1 && kiadasIndex != EOF && kiadasIndex <= index)
@@ -285,6 +391,8 @@ void kiadasList(){
             printf("Nem sikerult beolvasni");
         }
 
+
+        //TODO space kiveszi
         while ((read = getline(&line, &len, fp)) != -1) {
             printf("%s", line);
         }
