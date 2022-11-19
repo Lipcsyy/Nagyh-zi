@@ -1,3 +1,3 @@
 #pragma once
 
-void statistics();
+void statistics(time_t t);

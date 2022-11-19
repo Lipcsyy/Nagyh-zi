@@ -1,6 +1,7 @@
 #include "szamla.h"
 #include <string.h>
 #include <stdio.h>
+#include "debugmalloc.h"
 
 void menuPrint(){
     printf("\nSzamlan levo osszeg: %d HUF \n", szamla);
@@ -47,7 +48,6 @@ void footerPrint(char* header)
     int length = strlen(header);
     
     printf("\n");
-
 
     for (int i = 0; i < (60 + length); i++)
     {

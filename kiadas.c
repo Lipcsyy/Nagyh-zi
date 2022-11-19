@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <ctype.h>
 
+#include "debugmalloc.h"
 #include "szamla.h"
 #include "kiadas.h"
 #include "print.h"
@@ -72,6 +73,8 @@ void kiadas(time_t t)
         printf("\nSzeretned folytatni? (I) Igen (N) Nem : ");
         canContinue = scanf(" %c", &input) == 1 && (input == 'i' || input == 'I');
         
+        free(kiadasPt);
+
     }
 
     //összeszámoljuk, mennyit költene összesen most a felhasználó
@@ -103,7 +106,10 @@ void kiadas(time_t t)
         }
 
         szamla -= kiadasSum; //a szamlabol kivonom az osszeget
+
+        printf("Szamlawrite elott \n");
         szamlaWriter(szamla); //eltarolom az uj egyenleget
+        printf("Szamlawrite utan \n");   
 
         //itt alakítom ki a filenak a nevét
 
@@ -168,7 +174,7 @@ void kiadasWriter(char* fileName, listaElem* eleje, const char* mode)
         FILE* fp = fopen(fileName, mode);
         while (head != NULL)
         { 
-            fprintf(fp,"%s_%d_%s_%d\n", head->kiadas->nev, head->kiadas->osszeg,tags[head->kiadas->kategoria], head->kiadas->id);  
+            fprintf(fp,"%s_%d_%s_%d\n", head->kiadas->nev, head->kiadas->osszeg,tags[head->kiadas->kategoria-1], head->kiadas->id);  
             head = head->kov;
         }
             
@@ -216,6 +222,7 @@ void listaVegFuz(listaElem** eleje, Kiadas* kiadas)
     }  
 }
 
+
 void listaFelszabadit(listaElem* eleje)
 {   
     listaElem* head = eleje;
@@ -228,6 +235,7 @@ void listaFelszabadit(listaElem* eleje)
     }
     
 }
+
 
 void kiadasEdit(){
     
@@ -358,8 +366,8 @@ void kiadasEdit(){
 
             kiadasWriter(fileName,eleje, "w");
             
-            //TODO: freelni a láncolt listát
-            
+            //TODO: a torolt összeget hozzáadni a számlához.
+
             listaFelszabadit(eleje);
 
             fclose(fp);
@@ -455,8 +463,6 @@ void kiadasList(){
 
 
         fclose(fp);
-        if (line)
-            free(line);
         
         printf("\nAdd meg melyik tovabbi honapot szeretned kilistazni? ");
 

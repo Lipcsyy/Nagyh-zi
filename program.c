@@ -57,7 +57,7 @@ while (scanf(" %d", &input) == 1 && input != 6)
                 kiadasEdit();
                 break;
             case 5:
-                statistics();
+                statistics(t);
                 break;
 
             default:

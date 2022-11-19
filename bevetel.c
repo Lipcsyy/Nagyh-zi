@@ -3,6 +3,7 @@
 #include "kiadas.h"
 #include "szamla.h"
 #include "print.h"
+#include "debugmalloc.h"
 
 
 /// @brisf Bevétel megadása, ez a függvény fogja hozzáadni a pénzt a számládhoz.
