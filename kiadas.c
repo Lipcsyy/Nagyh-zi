@@ -47,6 +47,12 @@ void kiadas(time_t t)
         printf("\033[A\33[2K\033[A\33[2K");
 
         printf("Add meg a kategoriajat!\n");
+        for (int i = 0; i < 6; i++)
+        {
+            printf("%d:%s  ",i+1,tags[i]);
+        }
+
+        printf("\n");
 
         while (scanf("%d", &(kiadasPt->kategoria)) == 1 && (kiadasPt->kategoria > 6 || kiadasPt->kategoria <= 0 ))
         {
@@ -55,6 +61,7 @@ void kiadas(time_t t)
         }   
 
         printf("\033[A\33[2K\033[A\33[2K");
+        printf("\033[A\33[2K\033[A\33[2K");
 
         //--------------------------------------------láncolt listával
 
@@ -62,12 +69,11 @@ void kiadas(time_t t)
 
         kiadasokCount++;
         
-        printf("Szeretned folytatni? (I) Igen (N) Nem : ");
+        printf("\nSzeretned folytatni? (I) Igen (N) Nem : ");
         canContinue = scanf(" %c", &input) == 1 && (input == 'i' || input == 'I');
         
     }
 
-    //TODO: kiadasok lancolt lista felszabaditas
     //összeszámoljuk, mennyit költene összesen most a felhasználó
 
     int kiadasSum = 0;
@@ -79,7 +85,6 @@ void kiadas(time_t t)
         mozgo = mozgo->kov;
     }
 
-   
     //ha nincsen eleg penze, akkor hibaüzenettel visszatérünk, ha pedig sikeres, akkor végrehajtjuk a tranzakciot
 
     if (kiadasSum > szamla)
@@ -116,6 +121,11 @@ void kiadas(time_t t)
         kiadasWriter(fileName, eleje, "a");
         free(kiadasok);
     }
+
+    //felszabadítom a lancolt listat a fileba írás után
+
+    listaFelszabadit(eleje);
+
 
     footerPrint("KIADAS BEVITELE");
     
@@ -206,6 +216,18 @@ void listaVegFuz(listaElem** eleje, Kiadas* kiadas)
     }  
 }
 
+void listaFelszabadit(listaElem* eleje)
+{   
+    listaElem* head = eleje;
+
+    while (head != NULL)
+    {
+        listaElem* temp = head->kov;
+        free(head);
+        head = temp;
+    }
+    
+}
 
 void kiadasEdit(){
     
@@ -338,6 +360,8 @@ void kiadasEdit(){
             
             //TODO: freelni a láncolt listát
             
+            listaFelszabadit(eleje);
+
             fclose(fp);
             if (line)
                 free(line);

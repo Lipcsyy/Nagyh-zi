@@ -57,6 +57,10 @@ void kiadasWriter(char* fileName, listaElem* eleje, const char* mode);
 /// @param kiadas itt meg add meg az adott elemet, amit hozzá szeretnél fűzni a listához
 void listaVegFuz(listaElem** eleje, Kiadas* kiadas);
 
+/// @brief Ez a fuggveny a lancolt lista felszabadítja
+/// @param eleje A lancolt lista elejere mutato pointer
+void listaFelszabadit(listaElem* eleje);
+
 void kiadasEdit();
 
 /// @brief ez a függvény kilistazza az kert hónap adatait

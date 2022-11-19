@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "debugmalloc.h"
 #include "kiadas.h"
 #include "bevetel.h"
 #include "szamla.h"
