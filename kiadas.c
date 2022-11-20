@@ -6,7 +6,9 @@
 #include <dirent.h>
 #include <ctype.h>
 
-#include "debugmalloc.h"
+// #include "debugmalloc.h"
+#include "listManip.h"
+#include "header.h"
 #include "szamla.h"
 #include "kiadas.h"
 #include "print.h"
@@ -72,9 +74,6 @@ void kiadas(time_t t)
         
         printf("\nSzeretned folytatni? (I) Igen (N) Nem : ");
         canContinue = scanf(" %c", &input) == 1 && (input == 'i' || input == 'I');
-        
-        free(kiadasPt);
-
     }
 
     //összeszámoljuk, mennyit költene összesen most a felhasználó
@@ -83,7 +82,7 @@ void kiadas(time_t t)
     listaElem* mozgo = eleje;
 
     while (mozgo != NULL) 
-    {
+    {   
         kiadasSum+= mozgo->kiadas->osszeg;
         mozgo = mozgo->kov;
     }
@@ -107,9 +106,7 @@ void kiadas(time_t t)
 
         szamla -= kiadasSum; //a szamlabol kivonom az osszeget
 
-        printf("Szamlawrite elott \n");
         szamlaWriter(szamla); //eltarolom az uj egyenleget
-        printf("Szamlawrite utan \n");   
 
         //itt alakítom ki a filenak a nevét
 
@@ -125,13 +122,13 @@ void kiadas(time_t t)
         strcat(fileName,fMonth);
 
         kiadasWriter(fileName, eleje, "a");
+
         free(kiadasok);
     }
 
     //felszabadítom a lancolt listat a fileba írás után
 
     listaFelszabadit(eleje);
-
 
     footerPrint("KIADAS BEVITELE");
     
@@ -193,47 +190,6 @@ void kiadasWriter(char* fileName, listaElem* eleje, const char* mode)
         fclose(fp);
 
     }
-}
-
-
-void listaVegFuz(listaElem** eleje, Kiadas* kiadas)
-{
-    
-    listaElem* uj;
-
-    uj = (listaElem*) malloc(sizeof(listaElem));
-
-    uj->kiadas = kiadas;
-    uj->kov = NULL;
-    
-    if (*eleje == NULL)
-    {    
-        *eleje = uj;
-    }
-    else
-    {   
-        listaElem* mozgo = *eleje;
-
-        while (mozgo->kov != NULL) 
-        {   
-            mozgo = mozgo->kov;
-        }
-        mozgo->kov = uj; 
-    }  
-}
-
-
-void listaFelszabadit(listaElem* eleje)
-{   
-    listaElem* head = eleje;
-
-    while (head != NULL)
-    {
-        listaElem* temp = head->kov;
-        free(head);
-        head = temp;
-    }
-    
 }
 
 

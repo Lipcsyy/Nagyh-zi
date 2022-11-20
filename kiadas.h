@@ -4,34 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-
-typedef enum Kategoria
-{
-    vendeglatas,
-    szepsegapolas,
-    ruhazat,
-    szorakozas,
-    bevasarlas,
-    egyeb
-
-} Kategoria;
-
-typedef struct Kiadas
-{
-    int osszeg;
-    char nev[50];
-    Kategoria kategoria;
-    struct tm datum;
-    int id;
-
-} Kiadas;
-
-typedef struct listaElem{
-    
-    Kiadas* kiadas;
-    struct listaElem* kov;
-
-}  listaElem;
+#include "header.h"
 
 /// @brief Ez a függvény kezeli a kiadásokat, itt tudod megadni, milyen tételt és mennyiért vásároltál, illetve, hogy milyen kategóriába tartozik
 /// @param t Ezt szükséges megadni a függvénynek, hogy tudhassa az aktuális időt, ami szerint válogatja szét külön fileokba a termékeket

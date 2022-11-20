@@ -6,7 +6,12 @@
 #include "debugmalloc.h"
 #include "print.h"
 
-
+typedef struct countOfElem
+{
+    int count;
+    char nev[50];
+    struct countOfElem* kov;
+} countOfElem;
 
 void statistics(time_t t){
     headerPrint("STATISZTIKAK");
@@ -37,7 +42,9 @@ void statistics(time_t t){
     d = opendir(".");
 
     if (d) {
-    
+        
+        countOfElem* eleje = NULL;
+
         int sum = 0;
         while ((dir = readdir(d)) != NULL) {
             
@@ -55,8 +62,12 @@ void statistics(time_t t){
                 
                 while ((read = getline(&line, &len, fp)) != -1)
                 { 
-                    sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
-                    sum += osszeg;
+                    int foundItems = sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
+                    if (foundItems == 4) 
+                    {
+                        printf("%d\n",osszeg);
+                        sum += osszeg;
+                    }
                 }
             }
         }
@@ -94,8 +105,9 @@ void statistics(time_t t){
                 char nev[50];
                 char kategoria[20];
                 int id;
-                sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
-                atlagKoltes += osszeg;
+                int foundItems = sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
+                if (foundItems == 4) 
+                    atlagKoltes += osszeg;
             }
         }
     }
