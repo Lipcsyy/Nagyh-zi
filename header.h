@@ -32,3 +32,10 @@ typedef struct listaElem{
     struct listaElem* kov;
 
 }  listaElem;
+
+typedef struct countOfElem
+{
+    int count;
+    char nev[50];
+    struct countOfElem* kov;
+} countOfElem;

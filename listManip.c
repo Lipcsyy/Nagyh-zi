@@ -35,12 +35,25 @@ void listaFelszabadit(listaElem* eleje)
     {
         listaElem* temp = head->kov;
 
-        printf("%s\n", head->kiadas->nev);
         free(head->kiadas);
-        printf("head utan\n");
         free(head);
 
         head = temp;
     }
-    
+}
+
+bool listaTartalmaz(listaElem* eleje, char* nev){
+
+    listaElem head = eleje;
+
+    while (head != NULL)
+    {
+        if (strcmp(head->kiadas->nev,nev) == 0)
+        {
+            return true;
+        }
+        head = head->kov;
+    }
+
+    return false;
 }

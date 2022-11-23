@@ -1,4 +1,5 @@
-#pragma once
+#ifndef KIADAS_H
+#define KIADAS_H
 
 #include <time.h>
 #include <stdlib.h>
@@ -38,3 +39,5 @@ void kiadasEdit();
 
 /// @brief ez a függvény kilistazza az kert hónap adatait
 void kiadasList();
+
+#endif 

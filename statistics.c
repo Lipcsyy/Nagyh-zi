@@ -3,20 +3,13 @@
 #include <dirent.h>
 
 #include "statistics.h"
+#include "listManip.h"
 #include "debugmalloc.h"
 #include "print.h"
 
-typedef struct countOfElem
-{
-    int count;
-    char nev[50];
-    struct countOfElem* kov;
-} countOfElem;
 
 void statistics(time_t t){
     headerPrint("STATISZTIKAK");
-
-    //TODO: Havi költés
 
     //aktuális fájlnév megszerzése
 
@@ -43,29 +36,35 @@ void statistics(time_t t){
 
     if (d) {
         
-        countOfElem* eleje = NULL;
+        listaElem* eleje = NULL;
 
         int sum = 0;
         while ((dir = readdir(d)) != NULL) {
             
-            char * line = NULL;
-            size_t len = 0;
-            ssize_t read;
+            char sor[200];
 
             if (strcmp(dir->d_name, fileName) == 0) 
             {   
                 FILE * fp = fopen(fileName, "r");
                 int osszeg;
-                char nev[50];
-                char kategoria[20];
-                int id;
                 
-                while ((read = getline(&line, &len, fp)) != -1)
+                while (fgets (sor , 200 , fp) != NULL)
                 { 
-                    int foundItems = sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
+
+                    listaElem* kiadas = (listaElem*) malloc(sizeof(listaElem));
+                    char kategoria[50]; // ez egy placeholder
+
+                    int foundItems = sscanf(sor, "%[^_]_%d_%[^_]_%d",kiadas->kiadas->nev, &(kiadas->kiadas->osszeg) , kategoria , &(kiadas->kiadas->id));
+
+                    printf("SSCANF értéke %d\n",foundItems);
+
+                    if(listaTartalmaz(eleje, nev) == false)
+                    {
+                        listaVegFuz(*eleje)
+                    }
+
                     if (foundItems == 4) 
                     {
-                        printf("%d\n",osszeg);
                         sum += osszeg;
                     }
                 }
@@ -93,19 +92,17 @@ void statistics(time_t t){
             strcpy(fileName, dir->d_name); //hónap nevét itt szerezzük meg
 
             FILE *fp = fopen(fileName, "r"); //megnyitjuk a file-t
-            char * line = NULL;
-            size_t len = 0;
-            ssize_t read;
+            char sor[200];
 
             honapCount++;
 
-            while ((read = getline(&line, &len, fp)) != -1)
+            while (fgets (sor , 200 , fp) != NULL)
             {
                 int osszeg;
                 char nev[50];
                 char kategoria[20];
                 int id;
-                int foundItems = sscanf(line, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
+                int foundItems = sscanf(sor, "%[^_]_%d_%[^_]_%d",nev, &osszeg, kategoria,&id);
                 if (foundItems == 4) 
                     atlagKoltes += osszeg;
             }
@@ -118,6 +115,8 @@ void statistics(time_t t){
     closedir(d);
 
     //TODO: Legtobbszor vasarolt harom termek
+
+    //létrehozok egy láncolt listát úgy hogy kozben szamolom a countot,a legelso elemet mindi fell kell fűzni
 
     //TODO: Kategoriakra szétbontás és listázás is függőlegesen
 

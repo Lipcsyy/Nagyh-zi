@@ -250,9 +250,11 @@ void kiadasEdit(){
             printf("\nBeolvasott honap: %s\n", fileName);
 
             FILE* fp = fopen(fileName, "r");
-            char * line = NULL;
-            size_t len = 0;
-            ssize_t read;
+            //char * line = NULL;
+            //size_t len = 0;
+            //ssize_t read;
+
+            char sor[200];
 
             printf("\n");
             if (fp == NULL)
@@ -263,14 +265,12 @@ void kiadasEdit(){
             listaElem* eleje = NULL; 
             int lineIndex = 0;
 
-            while ((read = getline(&line, &len, fp)) != -1) {
+            while (fgets (sor , 200 , fp) != NULL) {
 
                 Kiadas* kiadasPt = (Kiadas*) malloc(sizeof(Kiadas));
                 char kategoria[20];
 
-                sscanf(line, "%[^_]_%d_%[^_]_%d", kiadasPt->nev, &(kiadasPt->osszeg), kategoria, &(kiadasPt->id));
-                
-                //printf("%s %d %s %d\n", kiadasPt->nev, kiadasPt->osszeg, kategoria, kiadasPt->id);
+                sscanf(sor, "%[^_]_%d_%[^_]_%d", kiadasPt->nev, &(kiadasPt->osszeg), kategoria, &(kiadasPt->id));
 
                 //tags-ből a kategóriának index megkeresese
                 for (int i = 0; i < 6; i++)
@@ -280,7 +280,7 @@ void kiadasEdit(){
                 
                 listaVegFuz(&eleje, kiadasPt);
 
-                printf("%d. %s", lineIndex ,line);
+                printf("%d. %s", lineIndex ,sor);
                
                 lineIndex++;
             }
@@ -289,8 +289,8 @@ void kiadasEdit(){
             lineIndex = 0;
             int deleteIndex = 0;
 
-            printf("Melyik elemet szeretned torolni? ");
-            scanf("%d", &deleteIndex);
+            printf("\nMelyik elemet szeretned torolni? ");
+            scanf(" %d", &deleteIndex);
             printf("\n");
 
             listaElem* head = eleje;
@@ -299,7 +299,14 @@ void kiadasEdit(){
 
             while (head != NULL && !deleted) 
             {   
-                if(deleteIndex == lineIndex)
+
+                if (deleteIndex == 0) //elso elem torlese
+                {   
+                    eleje = head->kov;
+                    free(head);
+                    deleted = true;
+                }
+                else if(deleteIndex == lineIndex)
                 {
                     temp->kov = head->kov;
                     free(head);
@@ -313,6 +320,8 @@ void kiadasEdit(){
             }
 
             head = eleje;
+            
+            printf("\nAz modositott honap kiadasai\n");
 
             while (head != NULL)
             {
@@ -327,8 +336,6 @@ void kiadasEdit(){
             listaFelszabadit(eleje);
 
             fclose(fp);
-            if (line)
-                free(line);
             
         }
 
@@ -401,9 +408,7 @@ void kiadasList(){
         printf("\nBeolvasott honap: %s\n", fileName);
 
         FILE* fp = fopen(fileName, "r");
-        char * line = NULL;
-        size_t len = 0;
-        ssize_t read;
+        char sor[200];
 
         printf("\n");
         if (fp == NULL)
@@ -411,12 +416,10 @@ void kiadasList(){
             printf("Nem sikerult beolvasni");
         }
 
-
-        //TODO space kiveszi
-        while ((read = getline(&line, &len, fp)) != -1) {
-            printf("%s", line);
+        //TODO: space kiveszi
+        while (fgets (sor , 200 , fp) != NULL) {
+            printf("%s", sor);
         }
-
 
         fclose(fp);
         
