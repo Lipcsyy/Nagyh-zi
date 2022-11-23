@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HEADER_H
+#define HEADER_H
 
 #include <time.h>
 #include <stdlib.h>
@@ -39,3 +40,6 @@ typedef struct countOfElem
     char nev[50];
     struct countOfElem* kov;
 } countOfElem;
+
+#endif 
+

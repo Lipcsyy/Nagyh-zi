@@ -42,18 +42,61 @@ void listaFelszabadit(listaElem* eleje)
     }
 }
 
-bool listaTartalmaz(listaElem* eleje, char* nev){
 
-    listaElem head = eleje;
+bool listaTartalmaz(countOfElem* eleje, char* nev){
+
+    countOfElem* head = eleje;
 
     while (head != NULL)
     {
-        if (strcmp(head->kiadas->nev,nev) == 0)
+        if (strcmp(head->nev,nev) == 0)
         {
+            head->count += 1; // itt noveljuk
             return true;
         }
         head = head->kov;
     }
 
     return false;
+}
+
+
+void statListaVegFuz(countOfElem** eleje, char* nev)
+{
+    countOfElem* uj;
+
+    uj = (countOfElem*) malloc(sizeof(countOfElem));
+
+    strcpy(uj->nev, nev);
+    uj->count = 1;
+    uj->kov = NULL;
+    
+    if (*eleje == NULL)
+    {    
+        *eleje = uj;
+    }
+    else
+    {   
+        countOfElem* mozgo = *eleje;
+
+        while (mozgo->kov != NULL) 
+        {   
+            mozgo = mozgo->kov;
+        }
+        mozgo->kov = uj; 
+    }  
+}
+
+void statListaFelszabadit(countOfElem* eleje)
+{
+    countOfElem* head = eleje;
+
+    while (head != NULL)
+    {
+        countOfElem* temp = head->kov;
+
+        free(head);
+
+        head = temp;
+    }
 }

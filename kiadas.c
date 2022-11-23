@@ -13,11 +13,11 @@
 #include "kiadas.h"
 #include "print.h"
 
-
 char* tags[] = {"vendeglatas","szepsegapolas","ruhazat", "szorakozas", "bevasarlas", "egyeb" };
 
 void kiadas(time_t t)
 {
+
 
     headerPrint("KIADAS BEVITELE");
     

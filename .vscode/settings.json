@@ -6,7 +6,8 @@
         "szamla.h": "c",
         "debugmalloc.h": "c",
         "print.h": "c",
-        "statistics.h": "c"
+        "statistics.h": "c",
+        "header.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

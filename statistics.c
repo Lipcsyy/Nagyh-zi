@@ -7,9 +7,12 @@
 #include "debugmalloc.h"
 #include "print.h"
 
+char* Tags[] = {"vendeglatas","szepsegapolas","ruhazat", "szorakozas", "bevasarlas", "egyeb" };
 
-void statistics(time_t t){
+void statistics(time_t t)
+{
     headerPrint("STATISZTIKAK");
+    
 
     //aktuális fájlnév megszerzése
 
@@ -36,9 +39,11 @@ void statistics(time_t t){
 
     if (d) {
         
-        listaElem* eleje = NULL;
+        countOfElem* eleje = NULL;
+        int kategoriaSum[6] = {0,0,0,0,0,0};
 
         int sum = 0;
+
         while ((dir = readdir(d)) != NULL) {
             
             char sor[200];
@@ -50,24 +55,63 @@ void statistics(time_t t){
                 
                 while (fgets (sor , 200 , fp) != NULL)
                 { 
+                    
+                    char nev[50];
+                    char* kategoria = (char*) malloc(sizeof(char)*20); // ez egy placeholder
+                    int osszeg = 0;
+                    int id = 0;
 
-                    listaElem* kiadas = (listaElem*) malloc(sizeof(listaElem));
-                    char kategoria[50]; // ez egy placeholder
-
-                    int foundItems = sscanf(sor, "%[^_]_%d_%[^_]_%d",kiadas->kiadas->nev, &(kiadas->kiadas->osszeg) , kategoria , &(kiadas->kiadas->id));
-
-                    printf("SSCANF értéke %d\n",foundItems);
-
-                    if(listaTartalmaz(eleje, nev) == false)
-                    {
-                        listaVegFuz(*eleje)
-                    }
-
+                    int foundItems = sscanf(sor, "%[^_]_%d_%[^_]_%d", nev, &osszeg, kategoria, &id);
+                    
                     if (foundItems == 4) 
-                    {
+                    {   
                         sum += osszeg;
+
+                        if(listaTartalmaz(eleje,nev) == false)
+                        {
+                            statListaVegFuz(&eleje, nev); //hogyha nem tartalmazza, akkor hozzafuzzuk, ha pedig tartalmazza akkor a listaTartalmaz fuggveny noveli a szamat automatikusan
+                        }
+
+                        for (int i = 0; i < 6 ; i++)
+                        {   
+                            if(strcmp(kategoria, Tags[i]) == 0)
+                            {   
+                                kategoriaSum[i] += osszeg; 
+                            }
+                        }
+
                     }
+
+                    free(kategoria);
+                }  
+
+                //maximum megkeresese 
+                countOfElem* head = eleje;
+
+                countOfElem* maxElem = NULL;
+                int countMax = 0;
+
+                while (head != NULL)
+                {
+                    if (head->count > countMax)
+                    {
+                        countMax = head->count;
+                        maxElem = head;
+                    }
+                    
+                    head = head->kov;
                 }
+                
+                printf("Ebben a honapban a legtobbet vasarolt elem a(z) %s volt, ezt osszesen %d alkalommal vasaroltad meg.\n",maxElem->nev, maxElem->count);
+                
+                    //TODO: Kategoriakra szétbontás és listázás is függőlegesen
+
+                for (int i = 0; i < 6; i++)
+                {
+                    printf("%s - %d HUF\n", Tags[i], kategoriaSum[i]);
+                }
+
+                statListaFelszabadit(eleje);
             }
         }
 
@@ -113,12 +157,6 @@ void statistics(time_t t){
     printf("Havi atlagkoltes: %d\n",atlagKoltes);
 
     closedir(d);
-
-    //TODO: Legtobbszor vasarolt harom termek
-
-    //létrehozok egy láncolt listát úgy hogy kozben szamolom a countot,a legelso elemet mindi fell kell fűzni
-
-    //TODO: Kategoriakra szétbontás és listázás is függőlegesen
-
+    
     footerPrint("STATISZTIKAK");
 }
