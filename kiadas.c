@@ -63,6 +63,8 @@ void kiadas(time_t t)
             printf("\033[A\33[2K\033[A\33[2K");
         }   
 
+        getchar();
+
         printf("\033[A\33[2K\033[A\33[2K");
         printf("\033[A\33[2K\033[A\33[2K");
 
@@ -72,8 +74,12 @@ void kiadas(time_t t)
 
         kiadasokCount++;
         
+
         printf("\nSzeretned folytatni? (I) Igen (N) Nem : ");
-        canContinue = scanf(" %c", &input) == 1 && (input == 'i' || input == 'I');
+        canContinue = scanf(" %c", &input) == 1 && (input == 'i' || input == 'I' ); 
+        
+        getchar(); //feleszi ami a scanf utan van
+
     }
 
     //összeszámoljuk, mennyit költene összesen most a felhasználó
@@ -106,7 +112,7 @@ void kiadas(time_t t)
 
         szamla -= kiadasSum; //a szamlabol kivonom az osszeget
 
-        szamlaWriter(szamla); //eltarolom az uj egyenleget
+        szamlaWriter(); //eltarolom az uj egyenleget
 
         //itt alakítom ki a filenak a nevét
 
@@ -135,7 +141,7 @@ void kiadas(time_t t)
 }
 
 
-void szamlaWriter(int osszeg){
+void szamlaWriter(){
     FILE* fp;
 
     fp = fopen("szamla.txt","w");
@@ -225,6 +231,8 @@ void kiadasEdit(){
 
     if(scanf("%d", &kiadasIndex ) == 1)
     {
+        getchar();
+
         d = opendir(".");
         if (d) {
             
@@ -275,7 +283,8 @@ void kiadasEdit(){
                 //tags-ből a kategóriának index megkeresese
                 for (int i = 0; i < 6; i++)
                 {
-                    if(strcmp(tags[i], kategoria) == 0 ) kiadasPt->kategoria = i;
+                    if(strcmp(tags[i], kategoria) == 0 ) 
+                    kiadasPt->kategoria = i+1;
                 }
                 
                 listaVegFuz(&eleje, kiadasPt);
@@ -283,31 +292,37 @@ void kiadasEdit(){
                 printf("%d. %s", lineIndex ,sor);
                
                 lineIndex++;
-            }
-
+            }           
 
             lineIndex = 0;
             int deleteIndex = 0;
 
             printf("\nMelyik elemet szeretned torolni? ");
             scanf(" %d", &deleteIndex);
+
+            getchar();
+
             printf("\n");
 
             listaElem* head = eleje;
             listaElem* temp = eleje;
             bool deleted = false;
 
+            int torolOsszeg = 0;
+
             while (head != NULL && !deleted) 
             {   
 
                 if (deleteIndex == 0) //elso elem torlese
                 {   
+                    torolOsszeg = head->kiadas->osszeg;
                     eleje = head->kov;
                     free(head);
                     deleted = true;
                 }
                 else if(deleteIndex == lineIndex)
-                {
+                {   
+                    torolOsszeg = head->kiadas->osszeg;
                     temp->kov = head->kov;
                     free(head);
                     deleted = true;
@@ -325,14 +340,15 @@ void kiadasEdit(){
 
             while (head != NULL)
             {
-                printf("%s %d %s %d \n", head->kiadas->nev,head->kiadas->osszeg, tags[head->kiadas->kategoria], head->kiadas->id);
+                printf("%s %d %s %d \n", head->kiadas->nev,head->kiadas->osszeg, tags[(head->kiadas->kategoria)-1], head->kiadas->id);
                 head = head->kov;
             }
 
-            kiadasWriter(fileName,eleje, "w");
-            
-            //TODO: a torolt összeget hozzáadni a számlához.
+            printf("\nAz uj egyenleged : %d \n", szamla);
 
+            kiadasWriter(fileName,eleje, "w");
+            szamla = szamla + torolOsszeg;   
+            szamlaWriter();
             listaFelszabadit(eleje);
 
             fclose(fp);
@@ -381,7 +397,8 @@ void kiadasList(){
 
 
     while (scanf("%d", &kiadasIndex ) == 1 && kiadasIndex != EOF && kiadasIndex <= index)
-    {
+    {   
+        getchar();
         d = opendir(".");
         if (d) {
             
@@ -423,7 +440,7 @@ void kiadasList(){
 
         fclose(fp);
         
-        printf("\nAdd meg melyik tovabbi honapot szeretned kilistazni? ");
+        printf("\nAdd meg melyik tovabbi honapot szeretned kilistazni? (Add meg a sorszamat, vagy nyomj mast a kilepeshez.) ");
 
     }
 

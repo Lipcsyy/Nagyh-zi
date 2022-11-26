@@ -12,8 +12,7 @@
 void kiadas(time_t t);
 
 /// @brief Ez a fuggveny beleirja a szamlaba a megadott osszeget
-/// @param osszeg Itt add meg, hogy mennyit szeretnel hozzadni a szamlahoz.
-void szamlaWriter(int osszeg);
+void szamlaWriter();
 
 /// @brief Ez a függvény leellenőrzi, hogy a megnyitni kívánt file létezik-e?
 /// @param filename Paraméterként a megnyitni kívánt file nevét kell megadni
@@ -35,6 +34,8 @@ void listaVegFuz(listaElem** eleje, Kiadas* kiadas);
 /// @param eleje A lancolt lista elejere mutato pointer
 void listaFelszabadit(listaElem* eleje);
 
+
+/// @brief Ezt a fuggvenyt meghivva lehetoseged van egy adott honapbol egy kiadast torolni
 void kiadasEdit();
 
 /// @brief ez a függvény kilistazza az kert hónap adatait

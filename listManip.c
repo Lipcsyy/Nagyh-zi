@@ -7,6 +7,13 @@ void listaVegFuz(listaElem** eleje, Kiadas* kiadas)
 
     uj = (listaElem*) malloc(sizeof(listaElem));
 
+    if (uj == NULL)
+    {
+        printf("Nem sikerult a memoriaban helyet foglalni\n");
+        return;
+    }
+    
+
     uj->kiadas = kiadas;
     uj->kov = NULL;
     
@@ -67,6 +74,12 @@ void statListaVegFuz(countOfElem** eleje, char* nev)
 
     uj = (countOfElem*) malloc(sizeof(countOfElem));
 
+    if(uj == NULL)
+    {   
+        printf("Nem sikerult a memoriaban helyet foglalni.\n");
+        return;
+    }
+
     strcpy(uj->nev, nev);
     uj->count = 1;
     uj->kov = NULL;
@@ -86,6 +99,7 @@ void statListaVegFuz(countOfElem** eleje, char* nev)
         mozgo->kov = uj; 
     }  
 }
+
 
 void statListaFelszabadit(countOfElem* eleje)
 {
